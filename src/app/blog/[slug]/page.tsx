@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
+import ReactMarkdown from 'react-markdown';
 import { getPostBySlug, getAllPostsMetadata } from '@/lib/blog';
 
 interface BlogPostPageProps {
@@ -17,7 +18,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   
   if (!post) {
     return {
@@ -32,7 +34,8 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
 
   if (!post || !post.published) {
     notFound();
@@ -84,7 +87,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       {/* Article content */}
       <article className="prose prose-lg max-w-none">
-        <div dangerouslySetInnerHTML={{ __html: post.content }} />
+        <ReactMarkdown>{post.content}</ReactMarkdown>
       </article>
 
       {/* Article footer */}
