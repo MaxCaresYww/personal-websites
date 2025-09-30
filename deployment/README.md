@@ -1,45 +1,25 @@
 # Quick Deployment Reference
 
-## Files Created
+## Files
 
 ```
 deployment/
-├── DEPLOYMENT.md           # Complete deployment guide
-├── CHECKLIST.md           # Pre-deployment checklist
-├── personal-website.service # Systemd service file
-├── nginx-static.conf      # Nginx config for static files
-├── nginx-proxy.conf       # Nginx config for reverse proxy
-├── deploy-static.sh       # Static deployment script
-├── deploy-service.sh      # Node.js service deployment script
-└── ecosystem.config.js    # PM2 config (alternative)
+├── DEPLOYMENT.md              # Full static deployment guide
+├── CHECKLIST.md               # Static pre-deployment checklist
+├── nginx-static.conf          # Nginx site config (IP or domain)
+├── deploy-static-atomic.sh    # Atomic deploy script
+├── ROLLBACK.md                # Release & rollback guide
 ```
 
 ## Quick Commands
 
-### Static Deployment
+### Deploy
 ```bash
-# Build and deploy static files
-./deployment/deploy-static.sh production
+./deployment/deploy-static-atomic.sh production
 ```
 
-### Node.js Service Deployment  
+### Reload Nginx (after config change)
 ```bash
-# Deploy as Node.js service
-./deployment/deploy-service.sh production
-```
-
-### Server Management
-```bash
-# Check service status
-sudo systemctl status personal-website
-
-# View logs
-sudo journalctl -u personal-website -f
-
-# Restart service
-sudo systemctl restart personal-website
-
-# Reload nginx
 sudo systemctl reload nginx
 ```
 
@@ -52,18 +32,9 @@ sudo certbot --nginx -d yourname.com
 sudo certbot renew
 ```
 
-## Two Deployment Options
+## Deployment Mode
 
-| Feature | Static Export | Node.js Service |
-|---------|---------------|-----------------|
-| Performance | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| Resource Usage | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
-| Complexity | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
-| API Routes | ❌ | ✅ |
-| Build Process | Static HTML | Server-side |
-| Updates | Re-deploy files | Restart service |
-
-**Recommendation: Use Static Export** for better performance and simpler maintenance.
+Static export only (Next.js `output: 'export'`) served by Nginx.
 
 ## Before You Deploy
 
@@ -71,7 +42,7 @@ sudo certbot renew
 2. ✅ Update server IP in deployment scripts  
 3. ✅ Customize personal information in pages
 4. ✅ Test build locally: `npm run build`
-5. ✅ Set up server prerequisites
+5. ✅ Set up server prerequisites (Nginx installed)
 
 ## Support
 

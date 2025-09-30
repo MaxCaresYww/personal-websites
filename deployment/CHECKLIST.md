@@ -6,20 +6,14 @@ Before deploying your personal website to production, make sure to complete thes
 
 ### Replace placeholder values in:
 
-**Nginx configuration files:**
-- [ ] Replace `yourname.com` with your actual domain in:
+**Nginx configuration file:**
+- [ ] Replace `yourname.com` (later when you have a domain) in:
   - `deployment/nginx-static.conf`
-  - `deployment/nginx-proxy.conf`
 
 **Deployment scripts:**
-- [ ] Update `deployment/deploy-static.sh`:
+- [ ] Update `deployment/deploy-static-atomic.sh`:
   ```bash
   REMOTE_USER="your-actual-username"
-  REMOTE_HOST="your-actual-server-ip"
-  ```
-- [ ] Update `deployment/deploy-service.sh`:
-  ```bash
-  REMOTE_USER="your-actual-username"  
   REMOTE_HOST="your-actual-server-ip"
   ```
 
@@ -39,14 +33,7 @@ Before deploying your personal website to production, make sure to complete thes
 - [ ] SSH access configured
 - [ ] User with sudo privileges created
 
-### For Node.js deployment:
-- [ ] Node.js 18+ installed
-- [ ] `nodejs` system user created:
-  ```bash
-  sudo useradd --system --create-home --shell /bin/bash nodejs
-  ```
-
-### For both deployment types:
+### Server basics:
 - [ ] Nginx installed and configured
 - [ ] Firewall configured:
   ```bash
@@ -66,17 +53,11 @@ Before deploying your personal website to production, make sure to complete thes
   sudo certbot --nginx -d yourname.com -d www.yourname.com
   ```
 
-## 4. Choose Deployment Method
+## 4. Prepare Static Export
 
-### Option A: Static Export (Recommended)
-- [ ] Uncomment static export lines in `next.config.ts`
-- [ ] Use `deployment/deploy-static.sh`
-- [ ] Use `deployment/nginx-static.conf`
-
-### Option B: Node.js Service
-- [ ] Keep default `next.config.ts`
-- [ ] Use `deployment/deploy-service.sh`
-- [ ] Use `deployment/nginx-proxy.conf`
+- [ ] `output: 'export'` in `next.config.ts`
+- [ ] (Optional) `trailingSlash: true`
+- [ ] Use `deploy-static-atomic.sh`
 
 ## 5. Test Locally
 
@@ -85,14 +66,9 @@ Before deploying your personal website to production, make sure to complete thes
 
 ## 6. Deploy
 
-### For static deployment:
+### Deploy (atomic preferred):
 ```bash
-./deployment/deploy-static.sh production
-```
-
-### For Node.js service:
-```bash
-./deployment/deploy-service.sh production
+./deployment/deploy-static-atomic.sh production
 ```
 
 ## 7. Post-Deployment Verification
@@ -112,15 +88,14 @@ Before deploying your personal website to production, make sure to complete thes
   # Add: 0 12 * * * /usr/bin/certbot renew --quiet
   ```
 - [ ] Regular server updates
-- [ ] Monitor service status (for Node.js deployment)
+- [ ] (Optional) External uptime monitoring
 - [ ] Backup strategy for content
 
 ## Troubleshooting
 
 If something goes wrong, check:
 - [ ] Nginx configuration: `sudo nginx -t`
-- [ ] Service status: `sudo systemctl status personal-website`
-- [ ] Logs: `sudo journalctl -u personal-website -f`
+- [ ] Nginx logs: access & error
 - [ ] DNS resolution
 - [ ] Firewall settings
 

@@ -1,33 +1,22 @@
-# Production Deployment Guide
+# Production Deployment Guide (Static Export Only)
 
-This guide will help you deploy your personal website to a production Ubuntu server as a systemd service.
+This guide explains how to deploy the site as a **pure static export** behind Nginx (no Node.js runtime in production).
 
 ## Prerequisites
 
-- Ubuntu 22.04 server with public IP
-- Domain name pointing to your server IP
-- SSH access to the server
-- Node.js 18+ installed on the server
+- Ubuntu 22.04 server (public IP OK, domain optional for now)
+- SSH access (key-based recommended)
+- Node.js 18+ locally (and on server only if you plan to build there — this guide builds locally)
+- (Optional later) A domain + DNS A record
 
-## Deployment Options
+## Overview
 
-You have two main deployment options:
+The site is exported via `next build` (with `output: 'export'`) into a static `out/` directory. We deploy releases atomically using a timestamped folder plus a `current` symlink.
 
-### Option 1: Static Export + Nginx (Recommended)
-- Build static HTML files
-- Serve with Nginx
-- Fastest performance
-- Lower resource usage
-
-### Option 2: Node.js Service + Nginx Proxy
-- Run Next.js in production mode
-- Nginx as reverse proxy
-- Support for API routes (if added later)
-- More flexible for future features
-
----
-
-## Option 1: Static Export Deployment
+Benefits:
+- No runtime Node.js dependencies on the server (after files are uploaded)
+- Simple rollback (switch symlink)
+- Fast & cache-friendly
 
 ### Step 1: Configure Next.js for Static Export
 
@@ -56,7 +45,7 @@ npm run build
 # The static files will be in the 'out' directory
 ```
 
-### Step 3: Server Setup
+### Step 3: Server Setup (Atomic Layout, IP-first)
 
 #### 3.1 Install Nginx
 ```bash
@@ -66,103 +55,43 @@ sudo systemctl enable nginx
 sudo systemctl start nginx
 ```
 
-#### 3.2 Create Site Directory
+#### 3.2 Create Site Directory Structure (atomic releases)
 ```bash
-sudo mkdir -p /var/www/yourname.com
-sudo chown -R $USER:$USER /var/www/yourname.com
-sudo chmod -R 755 /var/www/yourname.com
+sudo mkdir -p /var/www/personal-website/releases
+sudo mkdir -p /var/www/personal-website/current
+sudo chown -R $USER:$USER /var/www/personal-website
 ```
 
-#### 3.3 Upload Files
+#### 3.3 Upload Files (via atomic script)
+Prefer the atomic script `deployment/deploy-static-atomic.sh` which:
+1. Builds locally
+2. Tars the `out` directory
+3. Uploads to `releases/<timestamp>`
+4. Updates `current` symlink
+5. Cleans old releases
+
+Manual (fallback):
 ```bash
-# From your development machine
-rsync -avz --delete out/ user@your-server:/var/www/yourname.com/
+rsync -avz out/ user@server:/var/www/personal-website/releases/tmp-upload/
+ssh user@server 'ln -sfn /var/www/personal-website/releases/tmp-upload /var/www/personal-website/current && sudo systemctl reload nginx'
 ```
 
 #### 3.4 Configure Nginx
-Use the provided `nginx-static.conf` configuration.
+Use `deployment/nginx-static.conf` (serves `/var/www/personal-website/current`). For IP-only deployment leave `server_name _;`.
 
 ```bash
-sudo cp deployment/nginx-static.conf /etc/nginx/sites-available/yourname.com
-sudo ln -s /etc/nginx/sites-available/yourname.com /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
+sudo cp deployment/nginx-static.conf /etc/nginx/sites-available/personal-website
+sudo ln -s /etc/nginx/sites-available/personal-website /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
 ```
 
-#### 3.5 SSL Certificate
-```bash
-sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d yourname.com -d www.yourname.com
-```
-
----
-
-## Option 2: Node.js Service Deployment
-
-### Step 1: Server Setup
-
-#### 1.1 Install Node.js
-```bash
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt-get install -y nodejs
-```
-
-#### 1.2 Create Application User
-```bash
-sudo useradd --system --create-home --shell /bin/bash nodejs
-sudo mkdir -p /opt/personal-website
-sudo chown nodejs:nodejs /opt/personal-website
-```
-
-### Step 2: Deploy Application
-
-#### 2.1 Upload and Install
-```bash
-# From your development machine
-rsync -avz --exclude node_modules --exclude .git --exclude .next . user@your-server:/tmp/personal-website/
-
-# On the server
-sudo mv /tmp/personal-website/* /opt/personal-website/
-sudo chown -R nodejs:nodejs /opt/personal-website
-sudo -u nodejs bash
-cd /opt/personal-website
-npm ci --only=production
-npm run build
-exit
-```
-
-#### 2.2 Install and Start Systemd Service
-```bash
-sudo cp deployment/personal-website.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable personal-website
-sudo systemctl start personal-website
-sudo systemctl status personal-website
-```
-
-### Step 3: Configure Nginx as Reverse Proxy
-
-#### 3.1 Install Nginx
-```bash
-sudo apt update
-sudo apt install nginx
-sudo systemctl enable nginx
-sudo systemctl start nginx
-```
-
-#### 3.2 Configure Nginx
-```bash
-sudo cp deployment/nginx-proxy.conf /etc/nginx/sites-available/yourname.com
-sudo ln -s /etc/nginx/sites-available/yourname.com /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
-```
-
-#### 3.3 SSL Certificate
+#### 3.5 (Optional, later) SSL Certificate
+Skip until you have a domain:
 ```bash
 sudo apt install certbot python3-certbot-nginx
-sudo certbot --nginx -d yourname.com -d www.yourname.com
+sudo certbot --nginx -d example.com -d www.example.com
 ```
+After confirming HTTPS works, add HSTS to the TLS (443) server block only.
 
 ---
 
@@ -170,44 +99,24 @@ sudo certbot --nginx -d yourname.com -d www.yourname.com
 
 Use the provided deployment scripts for easier management:
 
-### For Static Deployment
+### Atomic Static Deployment (Only method)
 ```bash
-# Make executable
-chmod +x deployment/deploy-static.sh
-
-# Deploy
-./deployment/deploy-static.sh production
-```
-
-### For Node.js Service Deployment
-```bash
-# Make executable
-chmod +x deployment/deploy-service.sh
-
-# Deploy
-./deployment/deploy-service.sh production
+chmod +x deployment/deploy-static-atomic.sh
+./deployment/deploy-static-atomic.sh production
 ```
 
 ---
 
 ## Monitoring and Maintenance
 
-### Check Service Status
+### Check Nginx
 ```bash
-# For Node.js service
-sudo systemctl status personal-website
-sudo journalctl -u personal-website -f
-
-# For Nginx
 sudo systemctl status nginx
 sudo nginx -t
 ```
 
 ### View Logs
 ```bash
-# Application logs (Node.js service)
-sudo journalctl -u personal-website -f
-
 # Nginx logs
 sudo tail -f /var/log/nginx/access.log
 sudo tail -f /var/log/nginx/error.log
@@ -215,12 +124,7 @@ sudo tail -f /var/log/nginx/error.log
 
 ### Update Deployment
 ```bash
-# For static deployment
-./deployment/deploy-static.sh production
-
-# For Node.js service
-./deployment/deploy-service.sh production
-sudo systemctl restart personal-website
+./deployment/deploy-static-atomic.sh production
 ```
 
 ---
@@ -251,41 +155,55 @@ sudo certbot renew --dry-run
 
 ### Common Issues
 
-1. **Service won't start**
-   - Check logs: `sudo journalctl -u personal-website -f`
-   - Verify file permissions
-   - Check Node.js version compatibility
-
-2. **Nginx configuration errors**
+1. **Nginx configuration errors**
    - Test config: `sudo nginx -t`
    - Check syntax in configuration files
 
-3. **SSL certificate issues**
+2. **SSL certificate issues**
    - Verify domain DNS settings
    - Check certificate expiration: `sudo certbot certificates`
 
-4. **Port conflicts**
-   - Check what's using port 3000: `sudo netstat -tulpn | grep :3000`
-   - Update port in systemd service if needed
+3. **Stale cache / assets not updating**
+   - Hard refresh or clear CDN/browser cache
+   - Ensure atomic script removed old release symlink
 
 ---
 
 ## Configuration Files Included
 
-- `personal-website.service` - Systemd service file
 - `nginx-static.conf` - Nginx config for static files
-- `nginx-proxy.conf` - Nginx config for reverse proxy
-- `deploy-static.sh` - Static deployment script
-- `deploy-service.sh` - Node.js service deployment script
-- `ecosystem.config.js` - PM2 configuration (alternative to systemd)
+- `deploy-static-atomic.sh` - atomic static deployment script
+- `ROLLBACK.md` - Release / rollback procedure
 
 ---
 
 ## Next Steps After Deployment
 
-1. Test your website at your domain
-2. Set up monitoring (optional)
-3. Configure backup strategy
-4. Set up automatic deployments (optional)
+1. Test your website via IP (or domain when ready)
+2. Set up basic monitoring (optional)
+3. Configure backup strategy (e.g. tar + rsync of content)
+4. Automate deployment (optional CI later)
 
-Your website should now be live and accessible at your domain!
+Your website should now be live and accessible at: `http://<SERVER_IP>/`.
+
+---
+
+## IP-Only Deployment (No Domain Yet)
+
+If you do not yet own a domain:
+
+1. Leave `server_name _;` in both Nginx configs.
+2. Do NOT run Certbot yet (will fail without DNS records).
+3. Access the site via: `http://<SERVER_IP>/`.
+4. When you later acquire a domain:
+   ```bash
+   # Edit configs
+   sudo nano /etc/nginx/sites-available/personal-website
+   # Change: server_name _;  ->  server_name example.com www.example.com;
+   sudo nginx -t && sudo systemctl reload nginx
+   sudo certbot --nginx -d example.com -d www.example.com
+   # After HTTPS works, add HSTS line inside the 443 server block only.
+   ```
+5. Update deployment scripts (REMOTE_HOST can stay as IP or switch to domain).
+
+No further changes to the application code are required.
