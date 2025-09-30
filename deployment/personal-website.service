@@ -1,0 +1,30 @@
+[Unit]
+Description=Personal Website - Next.js Application
+Documentation=https://nextjs.org/docs
+After=network.target
+
+[Service]
+Type=simple
+User=nodejs
+Group=nodejs
+WorkingDirectory=/opt/personal-website
+Environment=NODE_ENV=production
+Environment=PORT=3000
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=10
+SyslogIdentifier=personal-website
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/personal-website
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
