@@ -7,7 +7,7 @@ const Header = () => {
         <div className="flex justify-between items-center py-6">
           <div className="flex-shrink-0">
             <Link href="/" className="text-2xl font-bold text-gray-900 hover:text-gray-700">
-              Your Name
+              Rongjie Xu (Max)
             </Link>
           </div>
           <nav className="hidden md:flex space-x-8">

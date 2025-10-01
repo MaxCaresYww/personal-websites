@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'About | Your Name',
+  title: 'About | Rongjie',
   description: 'Learn more about me, my background, and my interests.',
 };
 
@@ -12,30 +12,30 @@ export default function AboutPage() {
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Hello there! 👋</h2>
           <p className="text-gray-600 mb-6">
-            I&apos;m a passionate software developer with a love for creating meaningful digital experiences. 
-            My journey in technology started several years ago, and I&apos;ve been constantly learning and 
-            growing ever since.
+            I&apos;m a engineering leader with 10+ years of development experience
+            in cloud-native infrastructure, application, and developer experience,
+            cooperating with international teams.
           </p>
           
           <h3 className="text-xl font-semibold text-gray-900 mb-3">My Background</h3>
           <p className="text-gray-600 mb-6">
-            With a background in computer science and years of hands-on experience, I specialize in 
-            full-stack web development. I enjoy working with modern technologies and frameworks, 
-            always staying up-to-date with the latest industry trends.
+            With a background in electronic engineering and years of hands-on experience,
+            I specialize in cloud-native development. I enjoy working with modern technologies
+            and frameworks, always staying up-to-date with the latest industry trends.
           </p>
           
           <h3 className="text-xl font-semibold text-gray-900 mb-3">What I Do</h3>
           <p className="text-gray-600 mb-6">
-            Currently, I work as a software developer where I help build scalable web applications 
-            and contribute to open-source projects. I&apos;m particularly interested in:
+            Currently, I work as a software engineer where I help build cloud-native
+            platform services. I&apos;m particularly interested in:
           </p>
           
           <ul className="list-disc list-inside text-gray-600 mb-6 space-y-2">
-            <li>Full-stack web development with React, Next.js, and Node.js</li>
+            <li>Kubernetes operators development</li>
             <li>Cloud technologies and DevOps practices</li>
-            <li>Database design and optimization</li>
-            <li>Performance optimization and scalability</li>
-            <li>Open-source contributions and community building</li>
+            <li>Software design and optimization</li>
+            <li>AI infrastructure</li>
+            <li>Software craftsmanship contributions and community building</li>
           </ul>
           
           <h3 className="text-xl font-semibold text-gray-900 mb-3">Beyond Coding</h3>
@@ -57,29 +57,29 @@ export default function AboutPage() {
           <h3 className="text-xl font-semibold text-gray-900 mb-3">Skills & Technologies</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Frontend</h4>
+              <h4 className="font-medium text-gray-900 mb-2">Container</h4>
               <ul className="text-sm text-gray-600 space-y-1">
-                <li>React & Next.js</li>
-                <li>TypeScript</li>
-                <li>Tailwind CSS</li>
-                <li>HTML5 & CSS3</li>
+                <li>Container Runtime</li>
+                <li>Kubernetes</li>
+                <li>GPU management</li>
+                <li>Cloud-native</li>
               </ul>
             </div>
             <div>
               <h4 className="font-medium text-gray-900 mb-2">Backend</h4>
               <ul className="text-sm text-gray-600 space-y-1">
-                <li>Node.js</li>
+                <li>Golang</li>
                 <li>Python</li>
                 <li>REST APIs</li>
-                <li>GraphQL</li>
+                <li>Software Design</li>
               </ul>
             </div>
             <div>
               <h4 className="font-medium text-gray-900 mb-2">Tools & Others</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>Git & GitHub</li>
-                <li>Docker</li>
-                <li>AWS/Cloud</li>
+                <li>DevOps</li>
+                <li>Cloud</li>
                 <li>Linux</li>
               </ul>
             </div>

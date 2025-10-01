@@ -41,20 +41,21 @@ scp ${TAR_FILE} ${REMOTE_USER}@${REMOTE_HOST}:/tmp/
 rm -f ${TAR_FILE}
 
 echo -e "${YELLOW}Activating release on server...${NC}"
-ssh ${REMOTE_USER}@${REMOTE_HOST} bash -s <<EOF
-set -e
-sudo mkdir -p ${RELEASES_PATH}
-cd ${RELEASES_PATH}
-NEW_DIR=${RELEASE_DIR}
-sudo mkdir -p \"\${NEW_DIR}\"
-sudo tar -xzf /tmp/${TAR_FILE} -C \"\${NEW_DIR}\"
-sudo rm /tmp/${TAR_FILE}
-sudo chown -R root:root \"\${NEW_DIR}\"
-sudo chmod -R 755 \"\${NEW_DIR}\"
-sudo ln -sfn ${RELEASES_PATH}/\${NEW_DIR} ${CURRENT_PATH}
+ssh ${REMOTE_USER}@${REMOTE_HOST} \
+  "RELEASE_DIR='${RELEASE_DIR}' TAR_FILE='${TAR_FILE}' RELEASES_PATH='${RELEASES_PATH}' CURRENT_PATH='${CURRENT_PATH}' bash -s" <<'EOF_REMOTE'
+set -euo pipefail
+sudo mkdir -p "${RELEASES_PATH}"
+cd "${RELEASES_PATH}"
+NEW_DIR="${RELEASE_DIR}"
+sudo mkdir -p "${NEW_DIR}"
+sudo tar -xzf "/tmp/${TAR_FILE}" -C "${NEW_DIR}"
+sudo rm "/tmp/${TAR_FILE}"
+sudo chown -R root:root "${NEW_DIR}"
+sudo chmod -R 755 "${NEW_DIR}"
+sudo ln -sfn "${RELEASES_PATH}/${NEW_DIR}" "${CURRENT_PATH}"
 # Optional: cleanup (keep last 5)
-ls -1dt ${RELEASES_PATH}/* | tail -n +6 | xargs -r sudo rm -rf --
-EOF
+ls -1dt "${RELEASES_PATH}"/* | tail -n +6 | xargs -r sudo rm -rf --
+EOF_REMOTE
 
 echo -e "${YELLOW}Reloading nginx...${NC}"; ssh ${REMOTE_USER}@${REMOTE_HOST} "sudo systemctl reload nginx"
 

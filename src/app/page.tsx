@@ -12,11 +12,12 @@ export default function Home() {
       {/* Hero Section */}
       <section className="text-center mb-16">
         <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-          Hello, I&apos;m <span className="text-blue-600">Your Name</span>
+          Hello, I&apos;m <span className="text-blue-600">Rongjie Xu (Max)</span>
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          I&apos;m a passionate developer and writer, sharing my thoughts on technology, 
-          programming, and personal growth. Welcome to my digital space!
+          I&apos;m a engineering leader with 10+ years of development experience
+            in cloud-native infrastructure, application, and developer experience,
+            cooperating with international teams.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
@@ -31,6 +32,12 @@ export default function Home() {
           >
             About Me
           </Link>
+          <Link
+            href="/contact"
+            className="border border-gray-300 hover:border-gray-400 text-gray-700 px-8 py-3 rounded-lg font-medium transition-colors"
+          >
+            Contact
+          </Link>
         </div>
       </section>
 
@@ -41,7 +48,7 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <p className="text-gray-600 mb-4">
-                I&apos;m a software developer with a passion for creating meaningful digital experiences. 
+                I&apos;m a software engineer with a passion for demystifying cloud-native technologies. 
                 I love exploring new technologies and sharing my learning journey through writing.
               </p>
               <p className="text-gray-600 mb-4">
@@ -52,7 +59,7 @@ export default function Home() {
             <div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Skills & Interests</h3>
               <div className="flex flex-wrap gap-2">
-                {['JavaScript', 'React', 'Next.js', 'Node.js', 'Python', 'TypeScript', 'DevOps', 'Cloud Computing'].map((skill) => (
+                {['Container', 'Kubernetes', 'Golang', 'Python', 'System Design', 'DevOps', 'Cloud Computing'].map((skill) => (
                   <span
                     key={skill}
                     className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"

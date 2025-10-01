@@ -4,8 +4,8 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Your Name - Personal Website",
-  description: "Personal website and blog sharing thoughts on technology, programming, and more.",
+  title: "Rongjie Xu's Personal Website",
+  description: "Personal website and blog sharing thoughts on container, AI, and more.",
 };
 
 export default function RootLayout({

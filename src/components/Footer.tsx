@@ -4,11 +4,11 @@ const Footer = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-gray-600 text-sm">
-            © {new Date().getFullYear()} Your Name. All rights reserved.
+            © {new Date().getFullYear()} Rongjie Xu. All rights reserved.
           </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a
-              href="mailto:your.email@example.com"
+              href="mailto:maxcaresyww@gmail.com"
               className="text-gray-400 hover:text-gray-600 transition-colors"
               aria-label="Email"
             >
@@ -18,7 +18,7 @@ const Footer = () => {
               </svg>
             </a>
             <a
-              href="https://github.com/yourusername"
+              href="https://github.com/MaxCaresYww"
               className="text-gray-400 hover:text-gray-600 transition-colors"
               aria-label="GitHub"
             >
@@ -27,7 +27,7 @@ const Footer = () => {
               </svg>
             </a>
             <a
-              href="https://linkedin.com/in/yourprofile"
+              href="https://www.linkedin.com/in/rongjie-xu-75941a295"
               className="text-gray-400 hover:text-gray-600 transition-colors"
               aria-label="LinkedIn"
             >
