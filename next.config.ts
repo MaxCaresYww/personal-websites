@@ -9,12 +9,7 @@ const nextConfig: NextConfig = {
   },
   
   // Standard configuration
-  experimental: {
-    turbo: {}
-  },
-  
-  // Enable static generation for all pages
-  generateStaticParams: true,
+  turbopack: {}
 };
 
 export default nextConfig;

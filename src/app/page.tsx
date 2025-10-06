@@ -15,7 +15,7 @@ export default function Home() {
           Hello, I&apos;m <span className="text-blue-600">Rongjie Xu (Max)</span>
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          I&apos;m a engineering leader with 10+ years of development experience
+          I&apos;m an engineering leader with 10+ years of development experience
             in cloud-native infrastructure, application, and developer experience,
             cooperating with international teams.
         </p>
@@ -59,7 +59,7 @@ export default function Home() {
             <div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Skills & Interests</h3>
               <div className="flex flex-wrap gap-2">
-                {['Container', 'Kubernetes', 'Golang', 'Python', 'System Design', 'DevOps', 'Cloud Computing'].map((skill) => (
+                {['Container', 'Kubernetes', 'Golang', 'Python', 'System Design', 'DevOps', 'Cloud Computing', 'Cloud-native', 'AI Infrastructure'].map((skill) => (
                   <span
                     key={skill}
                     className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"

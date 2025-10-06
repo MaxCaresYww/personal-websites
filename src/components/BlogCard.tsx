@@ -16,7 +16,7 @@ const BlogCard = ({ post }: BlogCardProps) => {
           </time>
           {post.tags && post.tags.length > 0 && (
             <div className="flex flex-wrap gap-1">
-              {post.tags.slice(0, 2).map((tag) => (
+              {post.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
                   className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"

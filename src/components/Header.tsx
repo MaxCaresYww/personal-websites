@@ -55,7 +55,7 @@ const Header = () => {
               onClick={() => setOpen(o => !o)}
               className="inline-flex items-center justify-center rounded-md p-2 text-gray-600 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              <span className="sr-only">Toggle navigation menu</span>
+               
               {open ? (
                 // Close (X) icon
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
